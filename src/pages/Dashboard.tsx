@@ -225,7 +225,7 @@ export default function Dashboard() {
                       ))}
                     </Pie>
                     <Tooltip
-                      formatter={(v: number) => formatARS(v)}
+                      formatter={(v: unknown) => formatARS(Number(v))}
                       contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 24px rgba(0,0,0,0.1)' }}
                     />
                     <Legend
@@ -250,7 +250,7 @@ export default function Dashboard() {
                       <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false}
                         tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
                       <Tooltip
-                        formatter={(v: number) => formatARS(v)}
+                        formatter={(v: unknown) => formatARS(Number(v))}
                         contentStyle={{ borderRadius: 12, border: 'none', boxShadow: '0 4px 24px rgba(0,0,0,0.1)' }}
                       />
                       <Bar dataKey="gastado" name="Gastado" fill="#f87171" radius={[6, 6, 0, 0]} />

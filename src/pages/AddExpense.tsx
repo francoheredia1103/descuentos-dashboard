@@ -66,16 +66,21 @@ export default function AddExpense() {
     }, 1500)
   }
 
+  const inputClass = "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all text-sm"
+  const labelClass = "text-xs font-medium text-white/40 mb-1.5 block uppercase tracking-wide"
+
   if (success) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">
-        <div className="bg-emerald-100 text-emerald-600 rounded-full p-5">
-          <CheckCircle size={48} />
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-5">
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-full p-6 shadow-2xl shadow-emerald-900/40">
+          <CheckCircle size={48} className="text-emerald-400" />
         </div>
-        <p className="text-xl font-semibold text-slate-700">¡Gasto registrado!</p>
-        {savedAmount > 0 && (
-          <p className="text-slate-500">Ahorraste <strong className="text-emerald-600">${savedAmount.toLocaleString('es-AR')}</strong></p>
-        )}
+        <div className="text-center">
+          <p className="text-xl font-bold text-white">¡Gasto registrado!</p>
+          {savedAmount > 0 && (
+            <p className="text-white/50 mt-1">Ahorraste <strong className="text-emerald-400">${savedAmount.toLocaleString('es-AR')}</strong></p>
+          )}
+        </div>
       </div>
     )
   }
@@ -83,77 +88,80 @@ export default function AddExpense() {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold text-slate-800">Registrar gasto</h2>
-        <p className="text-slate-500 text-sm mt-0.5">Agregá un gasto y aplicá el descuento si usaste uno</p>
+        <h2 className="text-2xl font-bold text-white tracking-tight">Registrar gasto</h2>
+        <p className="text-white/40 text-sm mt-0.5">Agregá un gasto y aplicá el descuento si usaste uno</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Fecha y comercio */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 space-y-3">
-          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Datos del gasto</h3>
+        {/* Datos del gasto */}
+        <div className="bg-[#13131a] border border-white/5 rounded-2xl p-5 space-y-4">
+          <h3 className="text-xs font-semibold text-white/40 uppercase tracking-widest">Datos del gasto</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-slate-500 mb-1 block">Fecha</label>
+              <label className={labelClass}>Fecha</label>
               <input type="date" value={form.date}
                 onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className={inputClass}
               />
             </div>
             <div>
-              <label className="text-xs text-slate-500 mb-1 block">Categoría</label>
+              <label className={labelClass}>Categoría</label>
               <select value={form.category}
                 onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400">
-                {CATEGORIES.map(c => <option key={c}>{c}</option>)}
+                className={inputClass}>
+                {CATEGORIES.map(c => <option key={c} style={{ background: '#13131a' }}>{c}</option>)}
               </select>
             </div>
           </div>
           <div>
-            <label className="text-xs text-slate-500 mb-1 block">Comercio / Local</label>
+            <label className={labelClass}>Comercio / Local</label>
             <input placeholder="Ej: Coto, Farmacity..." value={form.commerce} required
               onChange={e => setForm(f => ({ ...f, commerce: e.target.value }))}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              className={inputClass}
             />
           </div>
           <div>
-            <label className="text-xs text-slate-500 mb-1 block">Monto total ($)</label>
+            <label className={labelClass}>Monto total ($)</label>
             <input type="number" placeholder="0" value={form.amount} required
               onChange={e => setForm(f => ({ ...f, amount: e.target.value }))}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 text-lg font-semibold"
+              className={`${inputClass} text-2xl font-bold`}
             />
           </div>
           <div>
-            <label className="text-xs text-slate-500 mb-1 block">Medio de pago</label>
+            <label className={labelClass}>Medio de pago</label>
             <input placeholder="Ej: Galicia débito, MODO..." value={form.payment_method}
               onChange={e => setForm(f => ({ ...f, payment_method: e.target.value }))}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+              className={inputClass}
             />
           </div>
         </div>
 
         {/* Descuento */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 space-y-3">
+        <div className="bg-[#13131a] border border-white/5 rounded-2xl p-5 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide">Descuento aplicado</h3>
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" checked={form.applyDiscount}
-                onChange={e => setForm(f => ({ ...f, applyDiscount: e.target.checked, discount_id: '', custom_pct: '' }))}
-                className="w-4 h-4 accent-emerald-500"
-              />
-              <span className="text-sm text-slate-600">Apliqué descuento</span>
+            <h3 className="text-xs font-semibold text-white/40 uppercase tracking-widest">Descuento aplicado</h3>
+            <label className="flex items-center gap-2.5 cursor-pointer group">
+              <div className={`w-10 h-5 rounded-full transition-all relative ${form.applyDiscount ? 'bg-emerald-500' : 'bg-white/10'}`}>
+                <div className={`w-4 h-4 bg-white rounded-full absolute top-0.5 transition-all shadow ${form.applyDiscount ? 'left-5' : 'left-0.5'}`} />
+                <input type="checkbox" checked={form.applyDiscount}
+                  onChange={e => setForm(f => ({ ...f, applyDiscount: e.target.checked, discount_id: '', custom_pct: '' }))}
+                  className="sr-only"
+                />
+              </div>
+              <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors">Apliqué descuento</span>
             </label>
           </div>
 
           {form.applyDiscount && (
             <div className="space-y-3">
               <div>
-                <label className="text-xs text-slate-500 mb-1 block">Seleccioná del catálogo</label>
+                <label className={labelClass}>Seleccioná del catálogo</label>
                 <select value={form.discount_id}
                   onChange={e => setForm(f => ({ ...f, discount_id: e.target.value, custom_pct: '' }))}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400">
-                  <option value="">— Sin seleccionar —</option>
+                  className={inputClass}>
+                  <option value="" style={{ background: '#13131a' }}>— Sin seleccionar —</option>
                   {discounts.map(d => (
-                    <option key={d.id} value={d.id}>
+                    <option key={d.id} value={d.id} style={{ background: '#13131a' }}>
                       {d.commerce} — {d.percentage}% ({d.payment_method ?? 'cualquier medio'})
                     </option>
                   ))}
@@ -161,10 +169,10 @@ export default function AddExpense() {
               </div>
               {!form.discount_id && (
                 <div>
-                  <label className="text-xs text-slate-500 mb-1 block">O ingresá % manualmente</label>
+                  <label className={labelClass}>O ingresá % manualmente</label>
                   <input type="number" placeholder="Ej: 20" value={form.custom_pct}
                     onChange={e => setForm(f => ({ ...f, custom_pct: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                    className={inputClass}
                   />
                 </div>
               )}
@@ -174,39 +182,40 @@ export default function AddExpense() {
 
         {/* Resumen */}
         {amount > 0 && (
-          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-4 text-white space-y-3">
-            <h3 className="text-sm font-semibold opacity-80 uppercase tracking-wide">Resumen</h3>
+          <div className="relative overflow-hidden bg-gradient-to-br from-emerald-900/60 to-teal-900/40 border border-emerald-500/20 rounded-2xl p-5 space-y-3">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+            <h3 className="text-xs font-semibold text-white/40 uppercase tracking-widest">Resumen</h3>
             <div className="flex justify-between text-sm">
-              <span className="opacity-80">Monto bruto</span>
-              <span className="font-semibold">${amount.toLocaleString('es-AR')}</span>
+              <span className="text-white/50">Monto bruto</span>
+              <span className="font-semibold text-white">${amount.toLocaleString('es-AR')}</span>
             </div>
             {savedAmount > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="opacity-80">Descuento ({discountPct}%)</span>
-                <span className="font-semibold text-emerald-200">− ${savedAmount.toLocaleString('es-AR')}</span>
+                <span className="text-white/50">Descuento ({discountPct}%)</span>
+                <span className="font-semibold text-emerald-400">− ${savedAmount.toLocaleString('es-AR')}</span>
               </div>
             )}
-            <div className="border-t border-white/20 pt-2 flex justify-between">
-              <span className="font-semibold">Total a pagar</span>
-              <span className="text-xl font-bold">${finalAmount.toLocaleString('es-AR')}</span>
+            <div className="border-t border-white/10 pt-3 flex justify-between items-center">
+              <span className="font-semibold text-white">Total a pagar</span>
+              <span className="text-2xl font-black text-white">${finalAmount.toLocaleString('es-AR')}</span>
             </div>
             {selectedDiscount?.cap_amount && rawSaving > selectedDiscount.cap_amount && (
-              <p className="text-xs opacity-70">* Descuento limitado al tope de ${selectedDiscount.cap_amount.toLocaleString('es-AR')}</p>
+              <p className="text-xs text-white/30">* Descuento limitado al tope de ${selectedDiscount.cap_amount.toLocaleString('es-AR')}</p>
             )}
           </div>
         )}
 
         {/* Notas */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
-          <label className="text-xs text-slate-500 mb-1 block">Notas (opcional)</label>
+        <div className="bg-[#13131a] border border-white/5 rounded-2xl p-5">
+          <label className={labelClass}>Notas (opcional)</label>
           <textarea rows={2} placeholder="Ej: Compra semanal, sin cola..." value={form.notes}
             onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-            className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none"
+            className={`${inputClass} resize-none`}
           />
         </div>
 
         <button type="submit" disabled={saving}
-          className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white font-bold rounded-2xl text-lg transition-colors shadow-lg">
+          className="w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 disabled:opacity-40 text-white font-black rounded-2xl text-lg transition-all shadow-2xl shadow-emerald-900/40">
           {saving ? 'Guardando...' : 'Registrar gasto'}
         </button>
       </form>

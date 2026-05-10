@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { PRELOADED_DISCOUNTS } from '../data/discounts'
 import type { Discount } from '../types'
-import { Plus, Tag, Calendar, CreditCard, Info } from 'lucide-react'
+import { Plus, Calendar, CreditCard, Tag, Info } from 'lucide-react'
 
 const DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 const TODAY = DAYS[new Date().getDay() === 0 ? 6 : new Date().getDay() - 1]
@@ -84,28 +84,28 @@ export default function Discounts() {
   }
 
   const categories = ['Todos', ...Array.from(new Set(discounts.map(d => d.category)))]
-
   const filtered = discounts.filter(d => {
     const dayMatch = filterDay === 'Todos' || (filterDay === 'Hoy' ? d.days.includes(TODAY) : d.days.includes(filterDay))
     const catMatch = filterCat === 'Todos' || d.category === filterCat
     return dayMatch && catMatch
   })
-
   const todayCount = discounts.filter(d => d.days.includes(TODAY)).length
+
+  const inputClass = "w-full px-4 py-3 rounded-xl bg-white/5 border border-white/8 text-white placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all text-sm"
 
   return (
     <div className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Descuentos</h2>
-          <p className="text-slate-500 text-sm mt-0.5">
-            <span className="text-emerald-600 font-semibold">{todayCount}</span> promos activas hoy ({TODAY})
+          <h2 className="text-2xl font-bold text-white tracking-tight">Descuentos</h2>
+          <p className="text-white/40 text-sm mt-0.5">
+            <span className="text-emerald-400 font-semibold">{todayCount}</span> promos activas hoy ({TODAY})
           </p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors shadow"
+          className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white px-4 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-emerald-900/40"
         >
           <Plus size={16} />
           Agregar
@@ -114,55 +114,53 @@ export default function Discounts() {
 
       {/* Add form */}
       {showForm && (
-        <div className="bg-white rounded-2xl shadow-md p-5 border border-emerald-100">
-          <h3 className="font-semibold text-slate-700 mb-4">Nuevo descuento</h3>
+        <div className="bg-[#13131a] border border-emerald-500/20 rounded-2xl p-5 shadow-2xl shadow-black/40">
+          <h3 className="font-semibold text-white mb-4">Nuevo descuento</h3>
           <form onSubmit={handleAddDiscount} className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2">
                 <input placeholder="Comercio *" required value={form.commerce}
                   onChange={e => setForm(f => ({ ...f, commerce: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                  className={inputClass}
                 />
               </div>
               <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                className={inputClass}>
                 {['Supermercado','Carnicería','Pollería','Restaurante','Helados / Cafetería','Farmacia','Transporte privado','Transporte público','Delivery','General','Otros'].map(c => (
-                  <option key={c}>{c}</option>
+                  <option key={c} style={{ background: '#13131a' }}>{c}</option>
                 ))}
               </select>
               <input placeholder="% descuento *" type="number" required value={form.percentage}
                 onChange={e => setForm(f => ({ ...f, percentage: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className={inputClass}
               />
               <input placeholder="Medio de pago" value={form.payment_method}
                 onChange={e => setForm(f => ({ ...f, payment_method: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className={inputClass}
               />
               <input placeholder="Tope $" type="number" value={form.cap_amount}
                 onChange={e => setForm(f => ({ ...f, cap_amount: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className={inputClass}
               />
               <input placeholder="Mínimo $" type="number" value={form.min_amount}
                 onChange={e => setForm(f => ({ ...f, min_amount: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className={inputClass}
               />
               <input type="date" value={form.valid_until}
                 onChange={e => setForm(f => ({ ...f, valid_until: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 col-span-2"
-                placeholder="Válido hasta"
+                className={`${inputClass} col-span-2`}
               />
             </div>
             <div>
-              <p className="text-xs text-slate-500 mb-2">Días que aplica:</p>
+              <p className="text-xs text-white/40 mb-2 uppercase tracking-wide">Días que aplica:</p>
               <div className="flex flex-wrap gap-2">
                 {DAYS.map(d => (
                   <button key={d} type="button" onClick={() => toggleDay(d)}
-                    className={`px-2 py-1 rounded-lg text-xs font-medium transition-colors ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       form.days.includes(d)
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
+                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-900/40'
+                        : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white/70 border border-white/8'
+                    }`}>
                     {d.slice(0, 3)}
                   </button>
                 ))}
@@ -171,15 +169,15 @@ export default function Discounts() {
             <textarea placeholder="Notas / condiciones" value={form.notes}
               onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
               rows={2}
-              className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 resize-none"
+              className={`${inputClass} resize-none`}
             />
             <div className="flex gap-2">
               <button type="submit" disabled={saving}
-                className="flex-1 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl text-sm transition-colors">
+                className="flex-1 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-emerald-900/40">
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
               <button type="button" onClick={() => setShowForm(false)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl text-sm transition-colors">
+                className="px-5 py-3 bg-white/5 hover:bg-white/10 text-white/60 font-semibold rounded-xl text-sm transition-all border border-white/8">
                 Cancelar
               </button>
             </div>
@@ -192,8 +190,10 @@ export default function Discounts() {
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           {['Hoy', 'Todos', ...DAYS].map(d => (
             <button key={d} onClick={() => setFilterDay(d)}
-              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                filterDay === d ? 'bg-emerald-500 text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                filterDay === d
+                  ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-900/40'
+                  : 'bg-[#13131a] text-white/40 border border-white/8 hover:text-white/70'
               }`}>
               {d === 'Hoy' ? `Hoy (${TODAY.slice(0,3)})` : d.slice(0,3)}
             </button>
@@ -202,8 +202,10 @@ export default function Discounts() {
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
           {categories.map(c => (
             <button key={c} onClick={() => setFilterCat(c)}
-              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                filterCat === c ? 'bg-slate-700 text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              className={`whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                filterCat === c
+                  ? 'bg-white/10 text-white border border-white/20'
+                  : 'bg-[#13131a] text-white/40 border border-white/8 hover:text-white/70'
               }`}>
               {CATEGORY_EMOJI[c] ?? '📌'} {c}
             </button>
@@ -213,39 +215,44 @@ export default function Discounts() {
 
       {/* Discounts list */}
       {loading ? (
-        <div className="text-center py-12 text-slate-400">Cargando descuentos...</div>
+        <div className="flex items-center justify-center py-20">
+          <div className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin" />
+        </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-12 text-slate-400">No hay descuentos para este filtro</div>
+        <div className="text-center py-16 bg-[#13131a] border border-white/5 rounded-2xl">
+          <p className="text-4xl mb-3">🏷️</p>
+          <p className="text-white/40">No hay descuentos para este filtro</p>
+        </div>
       ) : (
         <div className="space-y-3">
           {filtered.map(d => (
-            <div key={d.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+            <div key={d.id} className="bg-[#13131a] border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-all">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-lg">{CATEGORY_EMOJI[d.category] ?? '📌'}</span>
-                    <span className="font-semibold text-slate-800 text-sm">{d.commerce}</span>
-                    <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{d.category}</span>
+                    <span className="text-xl">{CATEGORY_EMOJI[d.category] ?? '📌'}</span>
+                    <span className="font-bold text-white text-sm">{d.commerce}</span>
+                    <span className="text-[10px] bg-white/5 text-white/40 px-2 py-0.5 rounded-full border border-white/8">{d.category}</span>
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+                  <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-white/30">
                     {d.payment_method && (
                       <span className="flex items-center gap-1">
-                        <CreditCard size={12} /> {d.payment_method}
+                        <CreditCard size={11} /> {d.payment_method}
                       </span>
                     )}
                     {d.days.length > 0 && (
                       <span className="flex items-center gap-1">
-                        <Calendar size={12} /> {d.days.map(day => day.slice(0,3)).join(' · ')}
+                        <Calendar size={11} /> {d.days.map(day => day.slice(0,3)).join(' · ')}
                       </span>
                     )}
                     {d.cap_amount && (
                       <span className="flex items-center gap-1">
-                        <Tag size={12} /> Tope ${d.cap_amount.toLocaleString('es-AR')}
+                        <Tag size={11} /> Tope ${d.cap_amount.toLocaleString('es-AR')}
                       </span>
                     )}
                     {d.min_amount && (
                       <span className="flex items-center gap-1">
-                        <Info size={12} /> Mín. ${d.min_amount.toLocaleString('es-AR')}
+                        <Info size={11} /> Mín. ${d.min_amount.toLocaleString('es-AR')}
                       </span>
                     )}
                     {d.valid_until && (
@@ -253,12 +260,12 @@ export default function Discounts() {
                     )}
                   </div>
                   {d.notes && (
-                    <p className="text-xs text-slate-400 mt-1 italic">{d.notes}</p>
+                    <p className="text-xs text-white/20 mt-1.5 italic">{d.notes}</p>
                   )}
                 </div>
-                <div className="shrink-0 text-center bg-emerald-50 rounded-xl px-3 py-2">
-                  <span className="text-2xl font-bold text-emerald-600">{d.percentage}%</span>
-                  <p className="text-xs text-emerald-500 font-medium">ahorro</p>
+                <div className="shrink-0 text-center bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2.5">
+                  <span className="text-2xl font-black text-emerald-400">{d.percentage}%</span>
+                  <p className="text-[10px] text-emerald-500/60 font-semibold mt-0.5">ahorro</p>
                 </div>
               </div>
             </div>
